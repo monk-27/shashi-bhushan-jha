@@ -1,26 +1,60 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
+@theme {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: #164343;     
+  --color-primary-hover: #103333;
+  --color-accent: #1ea173;      
+  --color-accent-hover: #178a61;
+  --color-text-light: #707876;  
+  --color-text-dark: #FFFFFF;   
+  
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --background: #FFFFFF;
+  --foreground: #000000;
+}
+
+.dark {
+  --background: #164343;
+  --foreground: #FFFFFF;
+}
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    @apply antialiased selection:bg-[#1ea173]/30 selection:text-[#1ea173] font-sans;
+    overflow-x: hidden;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+
+  /* Custom Vertical Scrollbar styling as requested */
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #E3F9F5;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1ea173;
+    border-radius: 5px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #164343;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .itco-glass {
+    @apply bg-white shadow-[0_10px_30px_rgba(22,67,67,0.1)] rounded-xl;
+  }
 }
