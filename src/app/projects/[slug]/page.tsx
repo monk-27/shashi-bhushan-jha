@@ -4,6 +4,7 @@ import ProjectIcon from "@/components/ui/ProjectIcon";
 import { User, Calendar, MessageCircle, ChevronRight, Search, Quote } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Comments from "@/components/projects/Comments";
 
 export function generateStaticParams() {
   return PROJECTS.map((p) => ({ slug: p.slug }));
@@ -137,48 +138,8 @@ export default async function ProjectDetails({ params }: { params: Promise<{ slu
               </div>
 
               {/* Comments */}
-              <div className="pt-10 border-t border-gray-100">
-                <h3 className="text-[28px] font-extrabold text-[#111] mb-10 tracking-tight">Comments (03)</h3>
-                {[
-                  { name: "Brooklyn Simmons", date: "28 April, 2023", text: "There are many different types of roofing materials to choose from, including asphalt shingles. Metal roofing, wood shakes, clay tiles, and slate. Each material has its own pros." },
-                  { name: "Marvin McKinney", date: "20 October, 2023", text: "It is a statement that highlights the importance of providing high-quality auto repair services. It suggests that the company or individual cares deeply about quality." },
-                  { name: "Ronald Richards", date: "06 June, 2023", text: "There are many different types of roofing materials to choose from, including asphalt shingles. Metal roofing, wood shakes, clay tiles, and slate. Each material has its own." },
-                ].map((c, i) => (
-                  <div key={i} className="flex gap-6 pb-8 border-b border-gray-100 mb-8 last:border-0 last:mb-0">
-                    <img src={`https://ui-avatars.com/api/?name=${c.name.replace(" ", "+")}&background=f3f4f6&color=164343&size=80`} alt={c.name} className="w-16 h-16 rounded-full shrink-0 object-cover" />
-                    <div className="w-full">
-                      <div className="flex items-start justify-between mb-3 gap-4">
-                        <div>
-                          <h5 className="text-[19px] font-bold text-[#111]">{c.name}</h5>
-                          <p className="text-[#1ea173] text-sm font-medium flex items-center gap-2 mt-1">
-                            <Calendar size={13} /> {c.date}
-                          </p>
-                        </div>
-                        <button className="shrink-0 px-4 py-2 rounded-full bg-[#E3F9F5] hover:bg-[#16a571] text-[#111] hover:text-white transition-colors text-[13px] font-bold">
-                          REPLY ↩
-                        </button>
-                      </div>
-                      <p className="text-[#555] leading-[1.8] text-[16px]">{c.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Comment Form */}
-              <div className="mt-10 p-10 lg:p-12 border border-gray-100 bg-white shadow-xl shadow-gray-100/50 rounded-2xl">
-                <h3 className="text-[28px] font-extrabold text-[#111] mb-2 tracking-tight">Add Your Comment</h3>
-                <p className="text-[#555] font-medium text-[16px] mb-8">Get in touch with us to see how we can help you with your project</p>
-                <form className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <input type="text" placeholder="Enter Name" className="w-full px-6 py-4 rounded-xl border border-gray-200 outline-none focus:border-[#16a571] text-[#555] text-[16px] transition-colors" />
-                    <input type="email" placeholder="Enter Email" className="w-full px-6 py-4 rounded-xl border border-gray-200 outline-none focus:border-[#16a571] text-[#555] text-[16px] transition-colors" />
-                  </div>
-                  <textarea placeholder="Enter Message..." rows={6} className="w-full px-6 py-4 rounded-xl border border-gray-200 outline-none focus:border-[#16a571] text-[#555] text-[16px] transition-colors resize-y" />
-                  <button type="submit" className="px-10 py-4 bg-[#16a571] text-white font-bold rounded-[8px] hover:bg-[#0c3b31] transition-colors shadow-lg text-[16px]">
-                    Submit Now
-                  </button>
-                </form>
-              </div>
+              {/* Comments */}
+              <Comments projectId={project.slug} />
             </div>
 
             {/* ── Right 4-col Sidebar ── */}

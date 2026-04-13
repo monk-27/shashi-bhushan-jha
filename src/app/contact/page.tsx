@@ -2,7 +2,8 @@ import PageBanner from "@/components/layout/PageBanner";
 import ContactComponent from "@/components/sections/Contact";
 
 export const metadata = {
-  title: "Contact - Shashi Bhushan Jha",
+  title: "Contact Me | Shashi Bhushan Jha",
+  description: "Get in touch with Shashi Bhushan Jha for full-stack development projects, consultations, or collaborations.",
 };
 
 export default function ContactPage() {

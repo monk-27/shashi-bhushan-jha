@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Play } from "lucide-react";
 import Link from "next/link";
 
+import Image from "next/image";
+
 export default function HomeHero() {
   return (
     <section className="relative pt-40 pb-20 lg:pt-48 lg:pb-32 bg-[#164343] overflow-hidden">
@@ -13,9 +15,9 @@ export default function HomeHero() {
 
       <div className="container mx-auto px-6 max-w-[1240px] relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Left Text Column */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
@@ -24,26 +26,26 @@ export default function HomeHero() {
               <span className="w-10 h-0.5 bg-[#1ea173]"></span>
               IT Solutions Provider
             </p>
-            
+
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-[1.15]">
               Full Stack <br />
               Development for <br />
               your success
             </h1>
-            
+
             <p className="text-gray-300 text-lg mb-10 max-w-lg leading-relaxed font-light">
               Hi, I&apos;m Shashi Bhushan Jha. I specialize in building performant, user-centric interfaces and powerful backend systems to elevate your digital presence.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center gap-6">
-              <Link 
+              <Link
                 href="/projects"
                 className="px-8 py-4 bg-[#1ea173] text-white text-[15px] font-bold rounded shadow-lg shadow-[#1ea173]/20 hover:bg-white hover:text-[#164343] transition-all duration-300"
               >
                 View Projects
               </Link>
-              
-              <Link 
+
+              <Link
                 href="/contact"
                 className="group flex items-center gap-4 text-white font-bold hover:text-[#1ea173] transition-colors duration-300"
               >
@@ -56,7 +58,7 @@ export default function HomeHero() {
           </motion.div>
 
           {/* Right Visual Image Column (mimicking curved crop) */}
-          <motion.div 
+          <motion.div
             className="relative flex justify-center lg:justify-end"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -64,19 +66,23 @@ export default function HomeHero() {
           >
             <div className="relative w-full max-w-[500px] aspect-[4/5]">
               {/* ITCO Leaf/Curved Mask container representation */}
-              <div 
-                className="absolute inset-0 bg-[#0e2c2c] overflow-hidden border-8 border-[#1ea173]/20 shadow-2xl"
+              <div
+                className="absolute inset-0 bg-[#0e2c2c] overflow-hidden border-8 border-[#1ea173]/20 shadow-2xl z-10"
                 style={{ borderRadius: "50% 50% 50% 0% / 50% 50% 50% 0%" }}
               >
-                 <div className="w-full h-full bg-gradient-to-tr from-[#164343] to-[#1ea173]/40 flex flex-col items-center justify-center p-8 text-center relative pointer-events-none">
-                    <div className="w-24 h-24 rounded-full bg-white mb-4 flex items-center justify-center text-[#164343] font-bold text-3xl shadow-xl">S</div>
-                    <h3 className="text-white text-3xl font-bold mb-2">Shashi B. Jha</h3>
-                    <p className="text-[#1ea173] font-bold tracking-wider uppercase">Software Engineer</p>
-                 </div>
+                <Image
+                  src="/shashi.jpeg"
+                  alt="Shashi Bhushan Jha"
+                  fill
+                  className="object-cover"
+                  priority
+                />
+                {/* Subtle Gradient Overlay for Depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#164343]/40 to-transparent pointer-events-none"></div>
               </div>
 
               {/* Floating Badge 1 (Top Right) */}
-              <motion.div 
+              <motion.div
                 animate={{ y: [0, -10, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-6 -right-6 lg:-right-12 bg-white text-[#164343] p-4 rounded-xl shadow-xl border border-gray-100 flex items-center gap-4 hidden md:flex"
@@ -85,12 +91,12 @@ export default function HomeHero() {
                   3+
                 </div>
                 <div>
-                  <p className="font-bold leading-tight">Years<br/>Experience</p>
+                  <p className="font-bold leading-tight">Years<br />Experience</p>
                 </div>
               </motion.div>
 
               {/* Floating Badge 2 (Bottom Left) */}
-              <motion.div 
+              <motion.div
                 animate={{ y: [0, 10, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -bottom-8 -left-8 lg:-left-12 bg-[#1ea173] text-white p-5 rounded-xl shadow-xl flex items-center gap-4"
@@ -99,7 +105,7 @@ export default function HomeHero() {
                   20+
                 </div>
                 <div>
-                  <p className="font-bold leading-tight">Completed<br/>Projects</p>
+                  <p className="font-bold leading-tight">Completed<br />Projects</p>
                 </div>
               </motion.div>
             </div>

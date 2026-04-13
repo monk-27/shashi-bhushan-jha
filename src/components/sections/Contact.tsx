@@ -7,15 +7,40 @@ import { useState } from "react";
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMsg("");
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      subject: formData.get("subject"),
+      message: formData.get("message"),
+    };
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to send message.");
+      }
+
       setSubmitted(true);
+      (e.target as HTMLFormElement).reset();
       setTimeout(() => setSubmitted(false), 5000);
-    }, 1500);
+    } catch (err: any) {
+      setErrorMsg(err.message || "An error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -53,7 +78,7 @@ export default function Contact() {
                   {[
                     { icon: MapPin, label: "Location", value: "New Delhi, India", href: undefined },
                     { icon: Phone, label: "Phone", value: "+91 9731737300", href: "tel:+919731737300" },
-                    { icon: Mail, label: "Email", value: "exquisiteshashi@gmail.com", href: "mailto:exquisiteshashi@gmail.com" },
+                    { icon: Mail, label: "Email", value: "shashibjha271299@gmail.com", href: "mailto:shashibjha271299@gmail.com" },
                   ].map(({ icon: Icon, label, value, href }) => (
                     <div key={label} className="flex items-start gap-4">
                       <div className="w-12 h-12 rounded-full bg-[#1ea173]/20 flex items-center justify-center text-[#1ea173] shrink-0">
@@ -91,25 +116,30 @@ export default function Contact() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <form onSubmit={handleSubmit} className="bg-white p-8 md:p-10 rounded-2xl border border-gray-100 shadow-xl space-y-6">
+                {errorMsg && (
+                  <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm mb-4">
+                    {errorMsg}
+                  </div>
+                )}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label htmlFor="name" className="text-sm font-bold text-[#164343]">Your Name</label>
-                    <input type="text" id="name" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="Shashi Bhushan" />
+                    <input type="text" id="name" name="name" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="John Doe" />
                   </div>
                   <div className="space-y-2">
                     <label htmlFor="email" className="text-sm font-bold text-[#164343]">Your Email</label>
-                    <input type="email" id="email" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="you@example.com" />
+                    <input type="email" id="email" name="email" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="you@example.com" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="subject" className="text-sm font-bold text-[#164343]">Subject</label>
-                  <input type="text" id="subject" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="Project Inquiry" />
+                  <input type="text" id="subject" name="subject" required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all" placeholder="Project Inquiry" />
                 </div>
 
                 <div className="space-y-2">
                   <label htmlFor="message" className="text-sm font-bold text-[#164343]">Message</label>
-                  <textarea id="message" rows={6} required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all resize-none" placeholder="Tell me about your project..." />
+                  <textarea id="message" name="message" rows={6} required className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-[#164343] focus:outline-none focus:border-[#1ea173] focus:bg-white transition-all resize-none" placeholder="Tell me about your project..." />
                 </div>
 
                 <button

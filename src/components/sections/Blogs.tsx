@@ -86,7 +86,45 @@ const BLOG_POSTS = [
   },
 ];
 
+import { useState, useEffect } from "react";
+import { client } from "@/sanity/lib/client";
+
 export default function Blogs() {
+  const [posts, setPosts] = useState(BLOG_POSTS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const query = `*[_type == "post"] | order(publishedAt desc) {
+          "slug": slug.current,
+          title,
+          excerpt,
+          "date": publishedAt,
+          category,
+          readTime,
+          author,
+          content,
+          tags
+        }`;
+        const sanityPosts = await client.fetch(query);
+        if (sanityPosts && sanityPosts.length > 0) {
+          // Format date for each post
+          const formattedPosts = sanityPosts.map((p: any) => ({
+            ...p,
+            date: new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+          }));
+          setPosts(formattedPosts);
+        }
+      } catch (err) {
+        console.log("Sanity not connected yet or fetch failed, using static posts.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
+
   return (
     <section className="py-24 bg-gray-50">
       <div className="container mx-auto px-6 max-w-[1240px]">
@@ -95,7 +133,7 @@ export default function Blogs() {
 
           {/* Left Blog List */}
           <div className="lg:col-span-8 space-y-12">
-            {BLOG_POSTS.map((post, idx) => (
+            {posts.map((post, idx) => (
               <motion.article
                 key={post.slug}
                 initial={{ opacity: 0, y: 24 }}
@@ -181,7 +219,7 @@ export default function Blogs() {
             <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
               <h4 className="text-[22px] font-bold text-[#111] mb-6 pb-4 border-b border-gray-100">Recent Posts</h4>
               <div className="space-y-6">
-                {BLOG_POSTS.slice(0, 3).map((rp) => (
+                {posts.slice(0, 3).map((rp) => (
                   <Link key={rp.slug} href={`/blogs/${rp.slug}`} className="flex items-center gap-4 group pb-6 border-b border-gray-100 last:border-0 last:pb-0">
                     <div className="w-20 h-20 shrink-0 bg-[#e3f9f5] rounded-xl flex items-center justify-center text-[#1ea173] text-2xl font-extrabold group-hover:bg-[#1ea173] group-hover:text-white transition-colors">
                       {rp.category.charAt(0)}

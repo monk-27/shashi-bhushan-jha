@@ -9,11 +9,11 @@ export default function HomeAbout() {
     <section className="py-24 bg-white overflow-hidden">
       <div className="container mx-auto px-6 max-w-[1240px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-          
+
           {/* Left Column (Intersecting Images layout) */}
           <div className="relative w-full max-w-[500px] mx-auto lg:mx-0">
             {/* Primary Large Image Shape */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
@@ -23,7 +23,7 @@ export default function HomeAbout() {
                 {/* Decorative lines mimicking the ITCO abstract design image */}
                 <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "repeating-linear-gradient(45deg, #1ea173 0, #1ea173 2px, transparent 2px, transparent 10px)" }}></div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
-                  <p className="font-bold text-lg mb-2 text-[#1ea173]">Since 2020</p>
+                  <p className="font-bold text-lg mb-2 text-[#1ea173]">Since 2022</p>
                   <h3 className="text-4xl font-extrabold tracking-tighter">Code &</h3>
                   <h3 className="text-4xl font-extrabold tracking-tighter">Design</h3>
                 </div>
@@ -31,7 +31,7 @@ export default function HomeAbout() {
             </motion.div>
 
             {/* Overlapping Small Circular Image */}
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -43,7 +43,7 @@ export default function HomeAbout() {
                 <p className="text-sm font-semibold tracking-wider uppercase">Deliver</p>
               </div>
             </motion.div>
-            
+
             {/* Decorative dot grid */}
             <div className="absolute top-10 -right-10 w-24 h-24 z-[-1]" style={{ backgroundImage: 'radial-gradient(#1ea173 2px, transparent 2px)', backgroundSize: '12px 12px', opacity: 0.5 }}></div>
           </div>
@@ -59,12 +59,12 @@ export default function HomeAbout() {
               <span className="w-10 h-0.5 bg-[#1ea173]"></span>
               About Shashi
             </p>
-            
+
             <h2 className="text-4xl md:text-5xl font-extrabold text-[#164343] mb-6 leading-tight">
-              We Execute Ideas <br className="hidden md:block"/>
+              We Execute Ideas <br className="hidden md:block" />
               From Start To Finish
             </h2>
-            
+
             <p className="text-gray-600 text-[17px] mb-8 leading-relaxed">
               With a strong background in both front-end aesthetics and back-end architecture, I deliver comprehensive software solutions. Whether it's a high-performance Next.js web application or a cross-platform Flutter mobile app, I ensure every detail aligns with modern standards.
             </p>
@@ -84,11 +84,11 @@ export default function HomeAbout() {
               </li>
             </ul>
 
-            <Link 
+            <Link
               href="/about"
               className="px-8 py-4 bg-[#164343] text-white text-[15px] font-bold rounded shadow-lg hover:bg-[#1ea173] transition-colors duration-300"
             >
-              Read More 
+              Read More
             </Link>
           </motion.div>
 

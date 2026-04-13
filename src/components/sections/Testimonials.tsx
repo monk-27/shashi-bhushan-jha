@@ -12,7 +12,7 @@ const TESTIMONIALS = [
     rating: 5,
   },
   {
-    name: "Mrityunjay",
+    name: "Mrityunjay Gupta",
     role: "Software Developer at Bright DiGi Gold",
     avatar: "M",
     content: "Collaborating with Shashi has been a great experience. He brings strong problem-solving skills and a clean, maintainable coding style. His ability to pick up new technologies quickly and contribute meaningfully from day one makes him an asset to any engineering team.",
@@ -20,7 +20,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Ritesh Singh",
-    role: "Project Owner",
+    role: "Project Manager and CTO",
     avatar: "R",
     content: "From the day I hired Shashi Bhushan Jha, his dedication and technical expertise have stood out. He turned our vision into a sleek, user-friendly website that has boosted client engagement and strengthened our brand. His ability to deliver exceptional results on time is truly commendable. Shashi, your hard work and commitment are invaluable to our team!",
     rating: 5,
@@ -34,14 +34,14 @@ const TESTIMONIALS = [
   },
   {
     name: "Amit Singh",
-    role: "Engineering Manager",
+    role: "Software Developer at Bright DiGi Gold",
     avatar: "A",
     content: "Shashi Bhushan Jha is an exceptional software developer with expertise in React, JavaScript, and TypeScript. He consistently delivered high-quality code. His collaboration skills and ability to communicate technical concepts were a major asset to our team. I highly recommend Shashi Bhushan Jha for any front-end development role.",
     rating: 5,
   },
   {
     name: "Ayush Arya",
-    role: "Product Collaborator",
+    role: "Software Developer at Bright DiGi Gold",
     avatar: "A",
     content: "Working with Shashi Bhushan Jha as a team member has been an absolute pleasure. He brings a sharp understanding of project requirements and delivers results that are both functional and visually impressive. His attention to detail, collaborative approach, and dedication to getting things done right are truly inspiring. Shashi's contributions consistently elevate the team's performance, and I'm grateful to have had the chance to work alongside him!",
     rating: 5,

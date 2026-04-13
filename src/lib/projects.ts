@@ -12,6 +12,16 @@ export type Project = {
 
 export const PROJECTS: Project[] = [
   {
+    slug: "callorax-ai",
+    title: "Callorax AI",
+    desc: "AI Voice Agents for Lead Campaign Automation. Deploys intelligent AI agents to handle inbound inquiries and launch outbound campaigns 24/7 with human-like precision that converts.",
+    category: "AI Automation Platform",
+    tags: ["AI", "Voice Synthesis", "Automation", "CRM Integration"],
+    iconName: "Mic",
+    externalLink: "https://www.callorax.com/",
+    date: "April 2026",
+  },
+  {
     slug: "testofire-platform",
     title: "TestOfire Web & App",
     desc: "A comprehensive coaching and student management platform built with Next.js, React Native, Node.js, and MongoDB. Features real-time communication protocols, secure payment gateway integrations, and robust analytics for cross-device performance optimization.",
