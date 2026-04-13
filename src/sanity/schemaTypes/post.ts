@@ -57,7 +57,13 @@ export const postType = {
       name: 'content',
       title: 'Content',
       type: 'text',
-      rows: 15, // In a real app, this would be portable text (array of blocks)
+      rows: 15,
+    },
+    {
+      name: 'quote',
+      title: 'Quote',
+      type: 'text',
+      rows: 3,
     },
   ],
 };

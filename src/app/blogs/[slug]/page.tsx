@@ -3,6 +3,7 @@ import { User, Calendar, MessageCircle, ChevronRight, Search, Quote } from "luci
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Comments from "@/components/projects/Comments";
+import { client } from "@/sanity/lib/client";
 
 const BLOG_POSTS = [
   {
@@ -52,13 +53,68 @@ Horizontal scaling with stateless services behind a load balancer using Redis fo
   },
 ];
 
-export function generateStaticParams() {
-  return BLOG_POSTS.map((b) => ({ slug: b.slug }));
+async function getPost(slug: string) {
+  // 1. Try fetching from Sanity
+  try {
+    const query = `*[_type == "post" && slug.current == $slug][0] {
+      "slug": slug.current,
+      title,
+      excerpt,
+      "date": publishedAt,
+      category,
+      readTime,
+      author,
+      content,
+      tags,
+      quote
+    }`;
+    const sanityPost = await client.fetch(query, { slug });
+    if (sanityPost) {
+      return {
+        ...sanityPost,
+        date: new Date(sanityPost.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+    }
+  } catch (err) {
+    console.error("Sanity fetch failed:", err);
+  }
+
+  // 2. Fallback to static
+  return BLOG_POSTS.find((b) => b.slug === slug);
+}
+
+async function getAllPosts() {
+  try {
+    const query = `*[_type == "post"] | order(publishedAt desc) {
+      "slug": slug.current,
+      title,
+      excerpt,
+      "date": publishedAt,
+      category,
+      readTime,
+      author,
+      content,
+      tags
+    }`;
+    const sanityPosts = await client.fetch(query);
+    const formattedSanity = sanityPosts.map((p: any) => ({
+      ...p,
+      date: new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    }));
+    return [...formattedSanity, ...BLOG_POSTS];
+  } catch (err) {
+    return BLOG_POSTS;
+  }
+}
+
+export async function generateStaticParams() {
+  const posts = await getAllPosts();
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((b) => b.slug === slug);
+  const post = await getPost(slug);
   return {
     title: post ? `${post.title} | Shashi Bhushan Jha` : "Blog",
     description: post?.excerpt ?? "",
@@ -67,7 +123,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function BlogDetailsPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = BLOG_POSTS.find((b) => b.slug === slug);
+  const post = await getPost(slug);
+  const allPosts = await getAllPosts();
+  
   if (!post) return notFound();
 
   const paragraphs = post.content.trim().split("\n\n");
@@ -94,39 +152,37 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ sl
 
               {/* Meta */}
               <div className="flex flex-wrap items-center gap-6 text-[#777] text-sm font-medium pb-6 border-b border-gray-100">
-                <span className="flex items-center gap-2"><User size={16} className="text-[#1ea173]" /> Admin</span>
+                <span className="flex items-center gap-2"><User size={16} className="text-[#1ea173]" /> {post.author || "Admin"}</span>
                 <span className="flex items-center gap-2"><Calendar size={16} className="text-[#1ea173]" /> {post.date}</span>
-                <span className="flex items-center gap-2"><MessageCircle size={16} className="text-[#1ea173]" /> Comment (03)</span>
+                <span className="flex items-center gap-2"><MessageCircle size={16} className="text-[#1ea173]" /> Dynamic Comments</span>
                 <span className="text-[#1ea173] font-bold">{post.readTime}</span>
               </div>
 
               <h1 className="text-3xl lg:text-[40px] font-extrabold text-[#111] leading-tight tracking-tight">{post.title}</h1>
 
-              {paragraphs.slice(0, 2).map((para, i) => (
-                <p key={i} className="text-[#555] text-[17px] leading-[1.9]">{para}</p>
-              ))}
-
-              {/* Blockquote */}
-              <div className="my-10 px-8 lg:px-12 py-10 bg-[#e3f9f5] border-l-[12px] border-[#16a571] rounded-r-2xl flex gap-6 items-start">
-                <div className="text-[#16a571] opacity-60 shrink-0">
-                  <Quote size={48} className="scale-x-[-1]" fill="currentColor" />
+              {paragraphs.map((para: string, i: number) => (
+                <div key={i}>
+                  <p className="text-[#555] text-[17px] leading-[1.9] mb-6">{para}</p>
+                  {i === 1 && post.quote && (
+                    <div className="my-10 px-8 lg:px-12 py-10 bg-[#e3f9f5] border-l-[12px] border-[#16a571] rounded-r-2xl flex gap-6 items-start">
+                      <div className="text-[#16a571] opacity-60 shrink-0">
+                        <Quote size={48} className="scale-x-[-1]" fill="currentColor" />
+                      </div>
+                      <p className="text-[22px] font-medium leading-relaxed italic text-[#333] mt-1">
+                        "{post.quote}"
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <p className="text-[22px] font-medium leading-relaxed italic text-[#333] mt-1">
-                  "{post.quote}"
-                </p>
-              </div>
-
-              {paragraphs.slice(2).map((para, i) => (
-                <p key={i} className="text-[#555] text-[17px] leading-[1.9]">{para}</p>
               ))}
 
               <h3 className="text-[28px] font-extrabold text-[#111] tracking-tight mb-4">Key Takeaways</h3>
               <ul className="space-y-4 mb-10">
-                {["Apply server-state architecture wherever possible before reaching for client state libraries",
-                  "Separate concerns strictly: controllers thin, services rich, repositories isolated",
-                  "Measure first — optimize after knowing the actual bottlenecks",
-                  "Choose tools that match team expertise and long-term maintenance costs",
-                  "Write integration tests against real interfaces, not just unit tests against mocks"].map((point, i) => (
+                {["Apply architectural patterns that scale with your team",
+                  "Prioritize performance and user experience in every decision",
+                  "Understand the trade-offs of the tools you choose",
+                  "Focus on building maintainable and clean codebases",
+                  "Always be learning and adapting to new industry standards"].map((point, i) => (
                   <li key={i} className="flex items-start gap-4 text-[#555] font-medium text-[17px]">
                     <span className="mt-2 w-2 h-2 rounded-full bg-[#16a571] shrink-0" />
                     {point}
@@ -138,7 +194,7 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ sl
               <div className="flex flex-col md:flex-row items-center justify-between pt-10 border-t border-gray-100 gap-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="font-semibold text-[#111]">Tag:</span>
-                  {post.tags.map((tag) => (
+                  {post.tags?.map((tag: string) => (
                     <span key={tag} className="text-[#16a571] hover:underline cursor-pointer font-medium">#{tag.replace(/\s+/g, "")}</span>
                   ))}
                 </div>
@@ -153,12 +209,12 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ sl
               {/* Author Box */}
               <div className="bg-[#e3f9f5] border border-[#aee7dc] rounded-2xl p-8 lg:p-10 flex flex-col md:flex-row items-center md:items-start gap-8 mt-12 mb-16">
                 <img
-                  src="https://ui-avatars.com/api/?name=Shashi+Bhushan&background=164343&color=fff&size=128"
-                  alt="Shashi Bhushan Jha"
+                  src={`https://ui-avatars.com/api/?name=${(post.author || "Shashi+Bhushan").replace(" ", "+")}&background=164343&color=fff&size=128`}
+                  alt={post.author || "Shashi Bhushan Jha"}
                   className="w-28 h-28 rounded-full shrink-0 shadow-xl object-cover"
                 />
                 <div>
-                  <h4 className="text-[22px] font-extrabold text-[#111] mb-1">Shashi Bhushan Jha</h4>
+                  <h4 className="text-[22px] font-extrabold text-[#111] mb-1">{post.author || "Shashi Bhushan Jha"}</h4>
                   <p className="text-[#1ea173] text-sm font-bold mb-4 uppercase tracking-wide">Software Developer</p>
                   <p className="text-[#555] font-medium text-[16px] leading-[1.8]">
                     Software Developer turning ideas into scalable products using Next.js, React, React Native, TypeScript, Node.js, and Flutter. Focused on building performant, user-centric solutions across web and mobile.
@@ -201,10 +257,10 @@ export default async function BlogDetailsPage({ params }: { params: Promise<{ sl
               <div className="bg-white rounded-2xl border border-gray-100 p-8 shadow-sm">
                 <h4 className="text-[22px] font-bold text-[#111] mb-6 pb-4 border-b border-gray-100">Recent Posts</h4>
                 <div className="space-y-6">
-                  {BLOG_POSTS.filter((b) => b.slug !== post.slug).slice(0, 3).map((rp) => (
+                  {allPosts.filter((b: any) => b.slug !== post.slug).slice(0, 3).map((rp: any) => (
                     <Link key={rp.slug} href={`/blogs/${rp.slug}`} className="flex items-center gap-4 group pb-6 border-b border-gray-100 last:border-0 last:pb-0">
                       <div className="w-20 h-20 shrink-0 bg-[#e3f9f5] rounded-xl flex items-center justify-center text-[#1ea173] text-2xl font-extrabold group-hover:bg-[#1ea173] group-hover:text-white transition-colors">
-                        {rp.category.charAt(0)}
+                        {rp.category?.charAt(0) || "B"}
                       </div>
                       <div>
                         <p className="text-[13px] font-bold text-[#16a571] mb-1 flex items-center gap-1"><Calendar size={12} /> {rp.date}</p>
